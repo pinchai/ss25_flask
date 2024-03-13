@@ -24,14 +24,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for item in range(10) %}
+                            {% for item in data %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>Soron</td>
-                                    <td>Male</td>
-                                    <td>031 37 2000 5</td>
-                                    <td>soronnosloy@hotmail.com</td>
-                                    <td>Stueng meanchey</td>
+                                    <td>{{ item['name'] }}</td>
+                                    <td>{{ item['gender'] }}</td>
+                                    <td>{{ item['phone'] }}</td>
+                                    <td>{{ item['email'] }}</td>
+                                    <td>{{ item['address'] }}</td>
                                     <td>
                                         <button
                                                 class="btn btn-sm btn-outline-primary"
@@ -39,14 +39,16 @@
                                             <i class="fas fa-eye"></i>
                                             View
                                         </button>
+                                        <a href="/edit_user/{{ item['id'] }}">
+                                            <button
+                                                    class="btn btn-sm btn-outline-secondary"
+                                            >
+                                                <i class="fas fa-edit"></i>
+                                                Edit
+                                            </button>
+                                        </a>
                                         <button
-                                                class="btn btn-sm btn-outline-secondary"
-                                        >
-                                            <i class="fas fa-edit"></i>
-                                            Edit
-                                        </button>
-                                        <button
-                                                class="btn btn-sm btn-outline-secondary"
+                                                class="btn btn-sm btn-outline-danger"
                                         >
                                             <i class="fas fa-trash"></i>
                                             Delete

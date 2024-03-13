@@ -2,6 +2,25 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
+std_list = [
+    {
+        'id': 1,
+        'name': 'soron123',
+        'gender': 'male',
+        'phone': '031 37 20 005',
+        'email': 'soronboyloy@gmail.com',
+        'address': 'kampong cham',
+    },
+    {
+        'id': 2,
+        'name': 'soben',
+        'gender': 'male',
+        'phone': '070 37 20 005',
+        'email': 'sobenhotboy@gmail.com',
+        'address': 'kampot',
+    }
+]
+
 @app.route('/')
 def home():
     module = 'master'
@@ -17,10 +36,18 @@ def dashboard():
 @app.route('/user')
 def user():
     module = 'user'
-    a = [1]
-    print(a[10])
+    return render_template('user.html', module=module, data=std_list)
 
-    return render_template('user.html', module=module)
+
+@app.route('/edit_user/<int:user_id>')
+def edit_user(user_id):
+    module = 'user'
+    current_user = []
+    for item in std_list:
+        if item['id'] == user_id:
+            current_user = item
+
+    return render_template('edit_user.html', module=module, data=current_user)
 
 
 @app.errorhandler(404)
