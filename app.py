@@ -39,15 +39,25 @@ def user():
     return render_template('user.html', module=module, data=std_list)
 
 
+@app.route('/add_user')
+def add_user():
+    module = 'user'
+    return render_template('add_user.html', module=module)
+
+
 @app.route('/edit_user/<int:user_id>')
 def edit_user(user_id):
     module = 'user'
-    current_user = []
-    for item in std_list:
-        if item['id'] == user_id:
-            current_user = item
+    # current_user = []
+    # for item in std_list:
+    #     if item['id'] == user_id:
+    #         current_user = item
 
-    return render_template('edit_user.html', module=module, data=current_user)
+    data = filter(lambda x: x['id'] == user_id, std_list)
+    current_user = list(data)
+    print(current_user)
+
+    return render_template('edit_user.html', module=module, data=current_user[0])
 
 
 @app.errorhandler(404)
