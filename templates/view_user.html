@@ -1,0 +1,23 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <a href="{{ url_for('user') }}">
+                        <button class="btn btn-secondary">
+                            <i class="far fa-arrow-alt-circle-left"></i>
+                            Back
+                        </button>
+                    </a>
+                </div>
+                <div class="card-body">
+                  <center>
+                      <h1>User Name: {{ name }}</h1>
+                      <h1>User Gender: {{ gender }}</h1>
+                  </center>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

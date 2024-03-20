@@ -1,11 +1,11 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
 std_list = [
     {
         'id': 1,
-        'name': 'soron123',
+        'name': 'soron',
         'gender': 'male',
         'phone': '031 37 20 005',
         'email': 'soronboyloy@gmail.com',
@@ -18,15 +18,19 @@ std_list = [
         'phone': '070 37 20 005',
         'email': 'sobenhotboy@gmail.com',
         'address': 'kampot',
+    },
+    {
+        'id': 3,
+        'name': 'chengmeng',
+        'gender': 'male',
+        'phone': '010 99 20 005',
+        'email': 'chengmengRSK@gmail.com',
+        'address': 'Takeo',
     }
 ]
 
+
 @app.route('/')
-def home():
-    module = 'master'
-    return render_template('master.html', module=module)
-
-
 @app.route('/dashboard')
 def dashboard():
     module = 'dashboard'
@@ -45,6 +49,21 @@ def add_user():
     return render_template('add_user.html', module=module)
 
 
+@app.route('/view_user')
+def view_user():
+    module = 'user'
+    name = request.args.get('name', default='No Name', )
+    gender = request.args.get('gender', default='Female', )
+    # current_user = []
+    # for item in std_list:
+    #     if item['id'] == user_id:
+    #         current_user = item
+
+    # data = filter(lambda x: x['id'] == user_id, std_list)
+    # current_user = list(data)
+    return render_template('view_user.html', module=module, name=name, gender=gender)
+
+
 @app.route('/edit_user/<int:user_id>')
 def edit_user(user_id):
     module = 'user'
@@ -55,8 +74,6 @@ def edit_user(user_id):
 
     data = filter(lambda x: x['id'] == user_id, std_list)
     current_user = list(data)
-    print(current_user)
-
     return render_template('edit_user.html', module=module, data=current_user[0])
 
 

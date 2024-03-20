@@ -29,18 +29,24 @@
                             {% for item in data %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ item['name'] }}</td>
+                                    <td>
+                                        <span style="text-transform: uppercase">
+                                            {{ item['name'] }}
+                                        </span>
+                                    </td>
                                     <td>{{ item['gender'] }}</td>
                                     <td>{{ item['phone'] }}</td>
                                     <td>{{ item['email'] }}</td>
                                     <td>{{ item['address'] }}</td>
                                     <td>
-                                        <button
+                                        <a href="/view_user?name={{ item['name'] }}&gender={{ item['gender'] }}">
+                                             <button
                                                 class="btn btn-sm btn-outline-primary"
                                         >
                                             <i class="fas fa-eye"></i>
                                             View
                                         </button>
+                                        </a>
                                         <a href="/edit_user/{{ item['id'] }}">
                                             <button
                                                     class="btn btn-sm btn-outline-secondary"
