@@ -39,13 +39,13 @@
                                     <td>{{ item['email'] }}</td>
                                     <td>{{ item['address'] }}</td>
                                     <td>
-                                        <a href="/view_user?name={{ item['name'] }}&gender={{ item['gender'] }}">
-                                             <button
-                                                class="btn btn-sm btn-outline-primary"
-                                        >
-                                            <i class="fas fa-eye"></i>
-                                            View
-                                        </button>
+                                        <a href="/view_user?name={{ item['name'] }}">
+                                            <button
+                                                    class="btn btn-sm btn-outline-primary"
+                                            >
+                                                <i class="fas fa-eye"></i>
+                                                View
+                                            </button>
                                         </a>
                                         <a href="/edit_user/{{ item['id'] }}">
                                             <button
@@ -55,12 +55,14 @@
                                                 Edit
                                             </button>
                                         </a>
-                                        <button
-                                                class="btn btn-sm btn-outline-danger"
-                                        >
-                                            <i class="fas fa-trash"></i>
-                                            Delete
-                                        </button>
+                                        <a href="/confirm_delete_user?name={{ item['name'] }}">
+                                            <button
+                                                    class="btn btn-sm btn-outline-danger"
+                                            >
+                                                <i class="fas fa-trash"></i>
+                                                Delete
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}

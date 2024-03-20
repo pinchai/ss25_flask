@@ -52,16 +52,21 @@ def add_user():
 @app.route('/view_user')
 def view_user():
     module = 'user'
-    name = request.args.get('name', default='No Name', )
-    gender = request.args.get('gender', default='Female', )
-    # current_user = []
-    # for item in std_list:
-    #     if item['id'] == user_id:
-    #         current_user = item
+    name = request.args.get('name', default='No Name',)
+    current_user = filter(lambda x: x['name'] == name, std_list)
+    user_list = list(current_user)
 
-    # data = filter(lambda x: x['id'] == user_id, std_list)
-    # current_user = list(data)
-    return render_template('view_user.html', module=module, name=name, gender=gender)
+    return render_template('view_user.html', module=module, data=user_list[0])
+
+
+@app.route('/confirm_delete_user')
+def confirm_delete_user():
+    module = 'user'
+    name = request.args.get('name', default='No Name',)
+    current_user = filter(lambda x: x['name'] == name, std_list)
+    user_list = list(current_user)
+
+    return render_template('confirm_delete_user.html', module=module, data=user_list[0])
 
 
 @app.route('/edit_user/<int:user_id>')

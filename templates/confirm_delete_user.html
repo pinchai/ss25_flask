@@ -1,0 +1,45 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <a href="{{ url_for('user') }}">
+                        <button class="btn btn-secondary">
+                            <i class="far fa-arrow-alt-circle-left"></i>
+                            Back
+                        </button>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h2 class="text-danger">Do you want to delete ?</h2>
+                    <ul>
+                        <li>User Name: {{ data['name'] }}</li>
+                        <li>User Gender: {{ data['gender'] }}</li>
+                        <li>User Phone: {{ data['phone'] }}</li>
+                        <li>User Email: {{ data['email'] }}</li>
+                        <li>User Address: {{ data['address'] }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('user') }}">
+                        <button
+                                class="btn btn-outline-secondary"
+                        >
+                            <i class="fas fa-undo"></i>
+                            Cancel
+                        </button>
+                    </a>
+                    <a href="#">
+                        <button
+                                class="btn btn-outline-danger float-right"
+                        >
+                            <i class="fas fa-trash"></i>
+                            Yes, Delete!
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
