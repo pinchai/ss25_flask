@@ -21,6 +21,8 @@
 	</body>
 </html>
 ```
+
+
 ```javascript
 new Vue({
 	el: '#vue-app', // contoled element
