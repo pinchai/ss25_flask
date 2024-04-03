@@ -12,12 +12,18 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="#">
+                    <form
+                            method="post"
+                            action="{{ url_for('create_user') }}"
+                            enctype="multipart/form-data"
+                    >
+                        {# id #}
                         <input
                                 type="hidden"
                                 id="id"
                                 name="id"
                         >
+                        {# Name #}
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input
@@ -28,6 +34,7 @@
                                     name="name"
                             >
                         </div>
+                        {# Gender #}
                         <div class="form-group">
                             <label for="gender">Gender</label>
                             <select
@@ -40,6 +47,7 @@
                                 <option value="none">None</option>
                             </select>
                         </div>
+                        {# Phone #}
                         <div class="form-group">
                             <label for="phone">Phone</label>
                             <input
@@ -49,14 +57,17 @@
                                     name="phone"
                             >
                         </div>
+                        {# E-mail #}
                         <div class="form-group">
                             <label for="email">E-mail</label>
                             <input
                                     type="text"
                                     class="form-control"
                                     id="email"
+                                    name="email"
                             >
                         </div>
+                        {# Address #}
                         <div class="form-group">
                             <label for="address">Address</label>
                             <textarea
@@ -66,11 +77,13 @@
                                     rows="5"
                             ></textarea>
                         </div>
+                        {# btn Reset #}
                         <input
                                 type="reset"
                                 class="btn btn-outline-danger"
                                 value="Reset"
                         >
+                        {# btn Save #}
                         <input
                                 type="submit"
                                 class="btn btn-outline-primary float-right"
