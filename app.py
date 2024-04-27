@@ -1,32 +1,24 @@
 from flask import Flask, render_template, request
+import sqlite3
+
 app = Flask(__name__)
 
-std_list = [
-    {
-        'id': 1,
-        'name': 'soron',
-        'gender': 'male',
-        'phone': '031 37 20 005',
-        'email': 'soronboyloy@gmail.com',
-        'address': 'kampong cham',
-    },
-    {
-        'id': 2,
-        'name': 'soben',
-        'gender': 'male',
-        'phone': '070 37 20 005',
-        'email': 'sobenhotboy@gmail.com',
-        'address': 'kampot',
-    },
-    {
-        'id': 3,
-        'name': 'chengmeng',
-        'gender': 'male',
-        'phone': '010 99 20 005',
-        'email': 'chengmengRSK@gmail.com',
-        'address': 'Takeo',
-    }
-]
+cnn = sqlite3.connect('db.sqlite3')
+cur = cnn.cursor()
+student = cur.execute("""SELECT * FROM student""")
+cnn.commit()
+std_list = []
+for row in student:
+    std_list.append(
+        {
+            'id': row[0],
+            'name': row[1],
+            'gender': row[2],
+            'phone': '031 37 20 005',
+            'email': 'soronboyloy@gmail.com',
+            'address': row[3],
+        }
+    )
 
 
 @app.route('/')
@@ -71,7 +63,7 @@ def create_user():
 @app.route('/view_user')
 def view_user():
     module = 'user'
-    name = request.args.get('name', default='No Name',)
+    name = request.args.get('name', default='No Name', )
     current_user = filter(lambda x: x['name'] == name, std_list)
     user_list = list(current_user)
 
@@ -81,7 +73,7 @@ def view_user():
 @app.route('/confirm_delete_user')
 def confirm_delete_user():
     module = 'user'
-    name = request.args.get('name', default='No Name',)
+    name = request.args.get('name', default='No Name', )
     current_user = filter(lambda x: x['name'] == name, std_list)
     user_list = list(current_user)
 
