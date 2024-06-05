@@ -3,22 +3,9 @@ import sqlite3
 
 app = Flask(__name__)
 
-cnn = sqlite3.connect('db.sqlite3')
-cur = cnn.cursor()
-student = cur.execute("""SELECT * FROM student""")
-cnn.commit()
 std_list = []
-for row in student:
-    std_list.append(
-        {
-            'id': row[0],
-            'name': row[1],
-            'gender': row[2],
-            'phone': '031 37 20 005',
-            'email': 'soronboyloy@gmail.com',
-            'address': row[3],
-        }
-    )
+cnn = sqlite3.connect('db.sqlite3', check_same_thread=False)
+cur = cnn.cursor()
 
 
 @app.route('/')
@@ -31,7 +18,21 @@ def dashboard():
 @app.route('/user')
 def user():
     module = 'user'
-    return render_template('user.html', module=module, data=std_list)
+    student = cur.execute("""SELECT * FROM student""")
+    cnn.commit()
+    list1 = []
+    for row in student:
+        list1.append(
+            {
+                'id': row[0],
+                'name': row[1],
+                'gender': row[2],
+                'phone': '031 37 20 005',
+                'email': 'soronboyloy@gmail.com',
+                'address': row[3],
+            }
+        )
+    return render_template('user.html', module=module, data=list1)
 
 
 @app.get('/add_user')
