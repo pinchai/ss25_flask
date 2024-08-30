@@ -16,7 +16,8 @@ def user():
 
 @app.get('/getUser')
 def getUser():
-    result = connection.execute(text("SELECT * FROM `user`"))
+    result = connection.execute(text("SELECT * FROM `user` order by id desc"))
+    connection.commit()
     data = result.fetchall()
     user_list = []
     for item in data:
@@ -33,6 +34,16 @@ def getUser():
     return user_list
 
 
+@app.post('/deleteUser')
+def deleteUser():
+    data = request.get_json()
+    user_id = data.get('id')
+    result = connection.execute(text(f"DELETE FROM `user`"
+                                     f" WHERE id = {user_id}"))
+    connection.commit()
+    return f"{result}"
+
+
 @app.post('/createUser')
 def createUser():
     form = request.get_json()
@@ -42,7 +53,8 @@ def createUser():
     email = form.get('email')
     address = form.get('address')
 
-    result = connection.execute(text(f"INSERT INTO `user` VALUES(null, '{name}', '{gender}', '{phone}', '{email}','{address}')"))
+    result = connection.execute(
+        text(f"INSERT INTO `user` VALUES(null, '{name}', '{gender}', '{phone}', '{email}','{address}')"))
     connection.commit()
     print(result)
     return '2112'
