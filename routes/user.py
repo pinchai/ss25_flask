@@ -1,85 +1,48 @@
 from app import app, render_template, request
-import sqlite3
-
-std_list = []
-cnn = sqlite3.connect('db.sqlite3', check_same_thread=False)
-cur = cnn.cursor()
+from sqlalchemy import create_engine, text
+try:
+    engine = create_engine("mysql+mysqlconnector://root:mysql@127.0.0.1/ss25_db")
+    # Test the connection
+    connection = engine.connect()
+except Exception as e:
+    print(e)
 
 
 @app.route('/user')
 def user():
     module = 'user'
-    student = cur.execute("""SELECT * FROM student""")
-    cnn.commit()
-    list1 = []
-    for row in student:
-        list1.append(
+    return render_template('user.html', module=module)
+
+
+@app.get('/getUser')
+def getUser():
+    result = connection.execute(text("SELECT * FROM `user`"))
+    data = result.fetchall()
+    user_list = []
+    for item in data:
+        user_list.append(
             {
-                'id': row[0],
-                'name': row[1],
-                'gender': row[2],
-                'phone': '031 37 20 005',
-                'email': 'soronboyloy@gmail.com',
-                'address': row[3],
+                'id': item[0],
+                'name': item[1],
+                'gender': item[2],
+                'phone': item[3],
+                'email': item[4],
+                'address': item[5],
             }
         )
-    return render_template('user.html', module=module, data=list1)
+    return user_list
 
 
-@app.get('/add_user')
-def add_user():
-    module = 'user'
-    return render_template('add_user.html', module=module)
+@app.post('/createUser')
+def createUser():
+    form = request.get_json()
+    name = form.get('name')
+    gender = form.get('gender')
+    phone = form.get('phone')
+    email = form.get('email')
+    address = form.get('address')
 
-
-@app.post('/create_user')
-def create_user():
-    module = 'user'
-    name = request.form.get('name')
-    gender = request.form.get('gender')
-    phone = request.form.get('phone')
-    email = request.form.get('email')
-    address = request.form.get('address')
-
-    form = {
-        'name': name,
-        'gender': gender,
-        'phone': phone,
-        'email': email,
-        'address': address,
-    }
-
-    return form
-
-
-@app.route('/view_user')
-def view_user():
-    module = 'user'
-    name = request.args.get('name', default='No Name', )
-    current_user = filter(lambda x: x['name'] == name, std_list)
-    user_list = list(current_user)
-
-    return render_template('view_user.html', module=module, data=user_list)
-
-
-@app.route('/confirm_delete_user')
-def confirm_delete_user():
-    module = 'user'
-    name = request.args.get('name', default='No Name', )
-    current_user = filter(lambda x: x['name'] == name, std_list)
-    user_list = list(current_user)
-
-    return render_template('confirm_delete_user.html', module=module, data=user_list)
-
-
-@app.route('/edit_user/<int:user_id>')
-def edit_user(user_id):
-    module = 'user'
-    # current_user = []
-    # for item in std_list:
-    #     if item['id'] == user_id:
-    #         current_user = item
-
-    data = filter(lambda x: x['id'] == user_id, std_list)
-    current_user = list(data)
-    return render_template('edit_user.html', module=module, data=current_user)
+    result = connection.execute(text(f"INSERT INTO `user` VALUES(null, '{name}', '{gender}', '{phone}', '{email}','{address}')"))
+    connection.commit()
+    print(result)
+    return '2112'

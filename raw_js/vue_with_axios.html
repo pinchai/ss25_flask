@@ -59,14 +59,16 @@
         },
         methods: {
             fetchData() {
-                let api_url = "https://fakestoreapi.com/products"
+                //let api_url = "https://fakestoreapi.com/products"
+                let api_url = "http://127.0.0.1:5000/"
                 let vm = this
                 $.LoadingOverlay("show");
                 axios.get(api_url)
                     .then(function (response) {
+                        console.log(response)
                         // handle success
                         //console.log(response.data);
-                        vm.product_list = response.data
+                        //vm.product_list = response.data
                         $.LoadingOverlay("hide");
                     })
                     .catch(function (error) {

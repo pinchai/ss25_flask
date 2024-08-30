@@ -105,7 +105,8 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
                     <li class="nav-item">
-                        <a href="{{ url_for('dashboard') }}" class="nav-link {{ 'active' if module == 'dashboard' else '' }}">
+                        <a href="{{ url_for('dashboard') }}"
+                           class="nav-link {{ 'active' if module == 'dashboard' else '' }}">
                             <i class="nav-icon fas fa-space-shuttle"></i>
                             <p>Dashboard</p>
                         </a>
@@ -179,6 +180,7 @@
     </footer>
 </div>
 
- {% include 'footer_script.html' %}
+{% include 'footer_script.html' %}
+{% block script %}{% endblock %}
 </body>
 </html>
