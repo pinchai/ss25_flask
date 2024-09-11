@@ -181,6 +181,32 @@
 </div>
 
 {% include 'footer_script.html' %}
+<script>
+
+    // Set a default base URL
+    axios.defaults.baseURL = 'http://' + window.location.hostname + ':' + window.location.port;
+
+    axios.interceptors.request.use(
+        (config) => {
+            //config.headers['Authorization'] = 'Bearer your-token-here';
+            config.headers['Content-Type'] = 'application/json';
+            $.LoadingOverlay("show", {
+                background: "rgba(0,0,0,0.1)",
+            });
+            return config;
+        },
+        (error) => {
+            return Promise.reject(error);
+        }
+    );
+
+    axios.interceptors.response.use(function (response) {
+        $.LoadingOverlay('hide');
+        return response;
+    }, function (error) {
+        $.LoadingOverlay('hide');
+    });
+</script>
 {% block script %}{% endblock %}
 </body>
 </html>

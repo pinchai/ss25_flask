@@ -219,9 +219,7 @@
                 },
                 getUser() {
                     let vm = this
-                    let api_url = vm.api_url + '/getUser'
-                    $.LoadingOverlay("show");
-                    axios.get(api_url)
+                    axios.get('/getUser')
                         .then(function (response) {
                             vm.user_list = response.data
                             $.LoadingOverlay("hide");
@@ -233,14 +231,11 @@
                 },
                 onSave() {
                     let vm = this
-                    let api_url = vm.api_url + '/createUser'
                     let input = this.form
-                    $.LoadingOverlay("show");
-                    axios.post(api_url, input)
+                    axios.post('/createUser', input)
                         .then(function (response) {
                             vm.getUser()
                             vm.closePopup()
-                            $.LoadingOverlay("hide");
                         })
                         .catch(function (error) {
                             // handle error
@@ -267,9 +262,7 @@
                         if (result.isConfirmed) {
                             //this.user_list.splice(id, 1);
                             let vm = this
-                            let api_url = vm.api_url + '/deleteUser'
-                            $.LoadingOverlay("show");
-                            axios.post(api_url, {id:id})
+                            axios.post('/deleteUser', {id:id})
                                 .then(function (response) {
                                     vm.getUser()
                                     $.LoadingOverlay("hide");
