@@ -34,6 +34,26 @@ def getUser():
     return user_list
 
 
+@app.post('/editUser')
+def editUser():
+    data = request.get_json()
+    user_id = data.get('id')
+    name = data.get('name')
+    gender = data.get('gender')
+    phone = data.get('phone')
+    email = data.get('email')
+    address = data.get('address')
+
+    result = connection.execute(text(f"UPDATE `user` set `name` = '{name}',"
+                                     f" `gender` = '{gender}', "
+                                     f"`phone` = '{phone}', "
+                                     f"`email` = '{email}', "
+                                     f"`address` = '{address}' "
+                                     f"WHERE id = '{user_id}'"))
+    connection.commit()
+    return "update success"
+
+
 @app.post('/deleteUser')
 def deleteUser():
     data = request.get_json()

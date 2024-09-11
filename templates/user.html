@@ -244,12 +244,26 @@
                 },
                 getEdit(item) {
                     this.status = 'edit'
+                    this.form.id = item.id
                     this.form.name = item.name
                     this.form.gender = item.gender
                     this.form.phone = item.phone
                     this.form.email = item.email
                     this.form.address = item.address
                     $('#user_modal').modal('show')
+                },
+                onEdit() {
+                    let vm = this
+                    let input = this.form
+                    axios.post('/editUser', input)
+                        .then(function (response) {
+                            vm.getUser()
+                            vm.closePopup()
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
                 },
                 deleteRecord(id) {
                     Swal.fire({
@@ -262,7 +276,7 @@
                         if (result.isConfirmed) {
                             //this.user_list.splice(id, 1);
                             let vm = this
-                            axios.post('/deleteUser', {id:id})
+                            axios.post('/deleteUser', {id: id})
                                 .then(function (response) {
                                     vm.getUser()
                                     $.LoadingOverlay("hide");
@@ -276,6 +290,7 @@
                 },
                 clearForm() {
                     this.status = 'add'
+                    this.form.id = null
                     this.form.name = null
                     this.form.gender = 'female'
                     this.form.phone = '855-'
