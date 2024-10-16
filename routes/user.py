@@ -72,9 +72,10 @@ def createUser():
     phone = form.get('phone')
     email = form.get('email')
     address = form.get('address')
+    password = '123456'
 
     result = connection.execute(
-        text(f"INSERT INTO `user` VALUES(null, '{name}', '{gender}', '{phone}', '{email}','{address}')"))
+        text(f"INSERT INTO `user` VALUES(null, '{name}', '{gender}', '{phone}', '{email}', '{address}', '{password}')"))
     connection.commit()
-    print(result)
-    return '2112'
+    current_id = result.lastrowid
+    return f"Last User ID: {current_id}"
