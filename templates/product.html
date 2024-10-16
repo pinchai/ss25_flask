@@ -1,0 +1,279 @@
+{% extends 'master.html' %}
+{% block content %}
+    <div id="app" class="row">
+        <div class="col-12">
+            <!-- Modal -->
+            <div
+                    class="modal fade"
+                    id="product_modal"
+                    data-backdrop="static"
+                    data-keyboard="false"
+                    tabindex="-1"
+                    aria-labelledby="staticBackdropLabel"
+                    aria-hidden="true"
+            >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">
+                                [[ status == 'add' ? 'Add New Product' : 'Update Product' ]]
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form enctype="multipart/form-data">
+                                [[ form ]]
+                                {# Name #}
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input
+                                            required
+                                            type="text"
+                                            class="form-control"
+                                            id="name"
+                                            name="name"
+                                            v-model="form.name"
+                                    >
+                                </div>
+                                {# Category #}
+                                <div class="form-group">
+                                    <label for="category">Category</label>
+                                    <select
+                                            class="form-control"
+                                            id="category"
+                                            v-model="form.category_id"
+                                    >
+                                        <option :value="null" disabled>--select category---</option>
+                                        <option
+                                                v-for="(item, index) in category_list"
+                                                :key="'category_list_'+index"
+                                                :value="item.id"
+                                        >[[ item.name ]]
+                                        </option>
+                                    </select>
+                                </div>
+                                {# Description #}
+                                <div class="form-group">
+                                    <label for="address">Description</label>
+                                    <textarea
+                                            class="form-control"
+                                            id="description"
+                                            name="description"
+                                            rows="5"
+                                            v-model="form.description"
+                                    >[[ form.description ]]</textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                    @click="closePopup()"
+                                    type="button"
+                                    class="btn btn-secondary"
+                            >Close
+                            </button>
+                            <button
+                                    v-if="status == 'add'"
+                                    @click="onSave()"
+                                    type="button"
+                                    class="btn btn-primary"
+                            >Save
+                            </button>
+
+                            <button
+                                    v-if="status == 'edit'"
+                                    @click="onEdit()"
+                                    type="button"
+                                    class="btn btn-warning"
+                            >Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <button
+                            @click="getProduct()"
+                            class="btn btn-secondary mr-2"
+                    >
+                        <i class="fas fa-circle"></i>
+                        Refresh
+                    </button>
+
+                    <button
+                            @click="openPopup()"
+                            class="btn btn-primary"
+                    >
+                        <i class="fas fa-plus-circle"></i>
+                        Add
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatable" class="table table-borderless table-striped">
+                            <thead>
+                            <tr class="bg-primary">
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr
+                                    v-for="(item, index) in product_list"
+                                    :key="'product_'+index"
+                            >
+                                <td>[[ index+1 ]]</td>
+                                <td>
+                                        <span style="text-transform: uppercase">
+                                            [[ item.name ]]
+                                        </span>
+                                </td>
+                                <td>[[ item.description ]]</td>
+                                <td>
+                                    <button
+                                            @click="getEdit(item)"
+                                            class="btn btn-sm btn-outline-secondary mr-2"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <button
+                                            @click="deleteRecord(item.id)"
+                                            class="btn btn-sm btn-outline-danger"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        const {createApp} = Vue
+        createApp({
+            delimiters: ['[[', ']]'],
+            created() {
+                this.getProduct()
+            },
+            data() {
+                return {
+                    product_list: [],
+                    category_list: [],
+                    form: {
+                        id: null,
+                        name: null,
+                        category_id: null,
+                        cost: null,
+                        price: null,
+                        stock: 0,
+                    },
+                    status: 'add',
+                    api_url: 'http://' + window.location.hostname + ':' + window.location.port
+                }
+            },
+            methods: {
+                openPopup() {
+                    $('#product_modal').modal('show')
+                },
+                closePopup() {
+                    this.clearForm()
+                    $('#product_modal').modal('hide')
+                },
+                getProduct() {
+                    let vm = this
+                    axios.get('/getProduct')
+                        .then(function (response) {
+                            vm.category_list = response.data.category_list
+                            vm.product_list = response.data.product_list
+                            $.LoadingOverlay("hide");
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
+                },
+                onSave() {
+                    let vm = this
+                    let input = this.form
+                    axios.post('/createProduct', input)
+                        .then(function (response) {
+                            vm.getProduct()
+                            vm.closePopup()
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
+                },
+                getEdit(item) {
+                    this.status = 'edit'
+                    this.form.id = item.id
+                    this.form.name = item.name
+                    this.form.gender = item.gender
+                    this.form.phone = item.phone
+                    this.form.email = item.email
+                    this.form.address = item.address
+                    $('#product_modal').modal('show')
+                },
+                onEdit() {
+                    let vm = this
+                    let input = this.form
+                    axios.post('/editProduct', input)
+                        .then(function (response) {
+                            vm.getProduct()
+                            vm.closePopup()
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
+                },
+                deleteRecord(id) {
+                    Swal.fire({
+                        title: "Do you want to delete ?",
+                        showDenyButton: false,
+                        showCancelButton: true,
+                        confirmButtonText: "Save",
+                        denyButtonText: `Don't save`
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let vm = this
+                            axios.post('/deleteProduct', {id: id})
+                                .then(function (response) {
+                                    vm.getProduct()
+                                    $.LoadingOverlay("hide");
+                                })
+                                .catch(function (error) {
+                                    // handle error
+                                    console.log(error);
+                                })
+                        }
+                    });
+                },
+                clearForm() {
+                    this.status = 'add'
+                    this.form.id = null
+                    this.form.name = null
+                    this.form.gender = 'female'
+                    this.form.phone = '855-'
+                    this.form.email = '@mail.com'
+                    this.form.address = null
+                },
+            }
+        }).mount('#app')
+    </script>
+{% endblock %}

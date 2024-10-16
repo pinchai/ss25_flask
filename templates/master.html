@@ -118,9 +118,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url_for('category') }}" class="nav-link {{ 'active' if module == 'category' else '' }}">
+                        <a href="{{ url_for('category') }}"
+                           class="nav-link {{ 'active' if module == 'category' else '' }}">
                             <i class="nav-icon fas fa-cubes"></i>
                             <p>Categories</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('product') }}"
+                           class="nav-link {{ 'active' if module == 'product' else '' }}">
+                            <i class="nav-icon fas fa-hippo"></i>
+                            <p>Product</p>
                         </a>
                     </li>
                     <li class="nav-item menu-open1">
