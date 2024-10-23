@@ -24,7 +24,13 @@
                         </div>
                         <div class="modal-body">
                             <form enctype="multipart/form-data">
-                                [[ form ]]
+                                {# Image #}
+                                <div class="col-4">
+                                    <div class="card bg-white">
+                                        <img style="" :src="form.image" alt="">
+                                        <input @change="handleImage" class="custom-input" type="file" accept="image/*">
+                                    </div>
+                                </div>
                                 {# Name #}
                                 <div class="form-group">
                                     <label for="name">Name</label>
@@ -54,16 +60,41 @@
                                         </option>
                                     </select>
                                 </div>
-                                {# Description #}
+                                {# Cost #}
                                 <div class="form-group">
-                                    <label for="address">Description</label>
-                                    <textarea
+                                    <label for="name">Cost</label>
+                                    <input
+                                            required
+                                            type="number"
                                             class="form-control"
-                                            id="description"
-                                            name="description"
-                                            rows="5"
-                                            v-model="form.description"
-                                    >[[ form.description ]]</textarea>
+                                            id="cost"
+                                            name="cost"
+                                            v-model="form.cost"
+                                    >
+                                </div>
+                                {# Price #}
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input
+                                            required
+                                            type="number"
+                                            class="form-control"
+                                            id="price"
+                                            name="price"
+                                            v-model="form.price"
+                                    >
+                                </div>
+                                {# Stock #}
+                                <div class="form-group">
+                                    <label for="stock">Stock</label>
+                                    <input
+                                            required
+                                            type="number"
+                                            class="form-control"
+                                            id="stock"
+                                            name="stock"
+                                            v-model="form.stock"
+                                    >
                                 </div>
                             </form>
                         </div>
@@ -118,8 +149,12 @@
                             <thead>
                             <tr class="bg-primary">
                                 <th>No.</th>
+                                <th>Image</th>
                                 <th>Name</th>
-                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Cost</th>
+                                <th>Price</th>
+                                <th>Stock</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -130,11 +165,27 @@
                             >
                                 <td>[[ index+1 ]]</td>
                                 <td>
+                                    <img
+                                            v-if="item.image != null"
+                                            onerror="this.src='/static/image_error.png';"
+                                            :src="'/static/uploaded_images/'+item.image"
+                                            style="width: 50px; height: 50px"
+                                    >
+                                    <img
+                                            v-else
+                                            src="/static/no-image.png"
+                                            style="width: 50px; height: 50px"
+                                    >
+                                </td>
+                                <td>
                                         <span style="text-transform: uppercase">
                                             [[ item.name ]]
                                         </span>
                                 </td>
-                                <td>[[ item.description ]]</td>
+                                <td>[[ item.category ]]</td>
+                                <td>[[ item.cost ]]</td>
+                                <td>[[ item.price ]]</td>
+                                <td>[[ item.stock ]]</td>
                                 <td>
                                     <button
                                             @click="getEdit(item)"
@@ -180,6 +231,7 @@
                         cost: null,
                         price: null,
                         stock: 0,
+                        image: null,
                     },
                     status: 'add',
                     api_url: 'http://' + window.location.hostname + ':' + window.location.port
@@ -223,10 +275,11 @@
                     this.status = 'edit'
                     this.form.id = item.id
                     this.form.name = item.name
-                    this.form.gender = item.gender
-                    this.form.phone = item.phone
-                    this.form.email = item.email
-                    this.form.address = item.address
+                    this.form.category_id = item.category_id
+                    this.form.cost = item.cost
+                    this.form.price = item.price
+                    this.form.stock = item.stock
+
                     $('#product_modal').modal('show')
                 },
                 onEdit() {
@@ -272,6 +325,19 @@
                     this.form.phone = '855-'
                     this.form.email = '@mail.com'
                     this.form.address = null
+                },
+                handleImage(e) {
+                    const selectedImage = e.target.files[0]; // get first file
+                    this.createBase64Image(selectedImage);
+                    this.form.image_change = true
+                },
+                createBase64Image(fileObject) {
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        this.form.image = e.target.result;
+                    };
+                    reader.readAsDataURL(fileObject);
                 },
             }
         }).mount('#app')
