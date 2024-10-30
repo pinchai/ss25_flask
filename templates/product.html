@@ -12,7 +12,7 @@
                     aria-labelledby="staticBackdropLabel"
                     aria-hidden="true"
             >
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">
@@ -24,78 +24,100 @@
                         </div>
                         <div class="modal-body">
                             <form enctype="multipart/form-data">
-                                {# Image #}
-                                <div class="col-4">
+                                <div class="row">
+                                    <div class="col-6">
                                     <div class="card bg-white">
-                                        <img style="" :src="form.image" alt="">
-                                        <input @change="handleImage" class="custom-input" type="file" accept="image/*">
+                                        <!-- File Input -->
+                                        <input type="file" @change="onFileChange" accept="image/*"/>
+                                        <!-- Image Preview Area -->
+                                        <div v-if="imageUrl" style="width: 500px; height: 500px">
+                                            <img id="image" :src="imageUrl" alt="Source Image"/>
+                                        </div>
+                                        <!-- Crop Button -->
+                                        <a
+                                                href="#"
+                                                class="w-100 btn btn-primary"
+                                                v-if="imageUrl"
+                                                @click="cropImage"
+                                        >Crop Image</a>
                                     </div>
                                 </div>
-                                {# Name #}
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input
-                                            required
-                                            type="text"
-                                            class="form-control"
-                                            id="name"
-                                            name="name"
-                                            v-model="form.name"
-                                    >
+                                    <div class="col-6">
+                                        <!-- Cropped Image Preview -->
+                                        <img
+                                                v-if="croppedImage"
+                                                :src="croppedImage"
+                                                alt="Cropped Image"
+                                                style="width: 150px; height: 200px"
+                                        />
+                                        {# Name #}
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <input
+                                                    required
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="name"
+                                                    name="name"
+                                                    v-model="form.name"
+                                            >
+                                        </div>
+                                        {# Category #}
+                                        <div class="form-group">
+                                            <label for="category">Category</label>
+                                            <select
+                                                    class="form-control"
+                                                    id="category"
+                                                    v-model="form.category_id"
+                                            >
+                                                <option :value="null" disabled>--select category---</option>
+                                                <option
+                                                        v-for="(item, index) in category_list"
+                                                        :key="'category_list_'+index"
+                                                        :value="item.id"
+                                                >[[ item.name ]]
+                                                </option>
+                                            </select>
+                                        </div>
+                                        {# Cost #}
+                                        <div class="form-group">
+                                            <label for="name">Cost</label>
+                                            <input
+                                                    required
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="cost"
+                                                    name="cost"
+                                                    v-model="form.cost"
+                                            >
+                                        </div>
+                                        {# Price #}
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <input
+                                                    required
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="price"
+                                                    name="price"
+                                                    v-model="form.price"
+                                            >
+                                        </div>
+                                        {# Stock #}
+                                        <div class="form-group">
+                                            <label for="stock">Stock</label>
+                                            <input
+                                                    required
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="stock"
+                                                    name="stock"
+                                                    v-model="form.stock"
+                                            >
+                                        </div>
                                 </div>
-                                {# Category #}
-                                <div class="form-group">
-                                    <label for="category">Category</label>
-                                    <select
-                                            class="form-control"
-                                            id="category"
-                                            v-model="form.category_id"
-                                    >
-                                        <option :value="null" disabled>--select category---</option>
-                                        <option
-                                                v-for="(item, index) in category_list"
-                                                :key="'category_list_'+index"
-                                                :value="item.id"
-                                        >[[ item.name ]]
-                                        </option>
-                                    </select>
                                 </div>
-                                {# Cost #}
-                                <div class="form-group">
-                                    <label for="name">Cost</label>
-                                    <input
-                                            required
-                                            type="number"
-                                            class="form-control"
-                                            id="cost"
-                                            name="cost"
-                                            v-model="form.cost"
-                                    >
-                                </div>
-                                {# Price #}
-                                <div class="form-group">
-                                    <label for="price">Price</label>
-                                    <input
-                                            required
-                                            type="number"
-                                            class="form-control"
-                                            id="price"
-                                            name="price"
-                                            v-model="form.price"
-                                    >
-                                </div>
-                                {# Stock #}
-                                <div class="form-group">
-                                    <label for="stock">Stock</label>
-                                    <input
-                                            required
-                                            type="number"
-                                            class="form-control"
-                                            id="stock"
-                                            name="stock"
-                                            v-model="form.stock"
-                                    >
-                                </div>
+
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -143,6 +165,7 @@
                         Add
                     </button>
                 </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="datatable" class="table table-borderless table-striped">
@@ -169,7 +192,7 @@
                                             v-if="item.image != null"
                                             onerror="this.src='/static/image_error.png';"
                                             :src="'/static/uploaded_images/'+item.image"
-                                            style="width: 50px; height: 50px"
+                                            style="width: 50px; height: 70px"
                                     >
                                     <img
                                             v-else
@@ -233,6 +256,9 @@
                         stock: 0,
                         image: null,
                     },
+                    imageUrl: null,
+                    croppedImage: null,
+                    cropper: null,
                     status: 'add',
                     api_url: 'http://' + window.location.hostname + ':' + window.location.port
                 }
@@ -339,6 +365,39 @@
                     };
                     reader.readAsDataURL(fileObject);
                 },
+
+                onFileChange(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    this.loadImage(file);
+                }
+            },
+                loadImage(file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        this.imageUrl = event.target.result;
+
+                        // Ensure Cropper.js is re-initialized when a new image is loaded
+                        this.$nextTick(() => {
+                            const image = document.getElementById('image');
+                            if (this.cropper) {
+                                this.cropper.destroy(); // Destroy previous cropper instance
+                            }
+                            this.cropper = new Cropper(image, {
+                                aspectRatio: 1 / 1.5, // Set your desired aspect ratio
+                                viewMode: 1
+                            });
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                },
+                cropImage() {
+                    if (this.cropper) {
+                        const canvas = this.cropper.getCroppedCanvas();
+                        this.croppedImage = canvas.toDataURL('image/png');
+                        this.form.image = this.croppedImage
+                    }
+                }
             }
         }).mount('#app')
     </script>
